@@ -1,3 +1,6 @@
+/** USE THIS SCRIPT TO GET IMAGE FOR A SINGLE RECIPE BY UPDATING website_url const
+ * 
+ */
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
@@ -5,15 +8,19 @@ const { URL } = require('url');
 
 (async () => {
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
 
     // Set viewport width and height
     await page.setViewport({ width: 1280, height: 720 });
 
-    const website_url = 'https://www.gousto.co.uk/cookbook/recipes/10-min-halloumi-brioche-with-chilli-jam-salad';
+    const website_url = 'https://www.gousto.co.uk/cookbook/recipe-by-id/2103';
 
     await page.goto(website_url, { waitUntil: 'networkidle0' });
+
+    // Get the current URL after redirection
+    const currentURL = page.url();
+    console.log(currentURL);
 
     // Selectors to remove
     const selectorsToRemove = [
@@ -70,10 +77,10 @@ const { URL } = require('url');
       remove_style(set);
     });
 
-    // Use regex to extract the descriptor after /recipes/
-    const regex = /\/recipes\/([^/]+)/;
-    const match = website_url.match(regex);
-    const descriptor = match && match[1];
+  // Use regex to extract the descriptor after /recipes/
+  const regex = /\/recipe-by-id\/([^/]+)/;
+  const match = currentURL.match(regex);
+  const descriptor = match && match[1];
 
     if (descriptor) {
       // Generate the filename using the extracted descriptor
