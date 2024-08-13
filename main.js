@@ -97,6 +97,8 @@ const moment = require('moment');
         // Generate the filename using the extracted descriptor
         const filename = path.join(outputFolder, `${website_url.split('/').pop()}.jpg`);
 
+        console.log("Generating: " + filename);
+
         // Capture a screenshot with the generated filename
         await page.screenshot({ path: filename, fullPage: true });
       } else {
